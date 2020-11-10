@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> -->
+
+    <title>More Games Store</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/reset.css" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/main.css" />
+
+    <!-- JQUERY -->
+
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+
+</head>
+
+<body onload="cargarInfo()">
+
+    <div id="header">
+
+        <div class="container">
+
+            <h1>MORE GAMES STORE</h1>
+            
+
+            <div id="main_menu">
+
+                <ul>
+                    <li class="first_list"><a href="login.html" class="main_menu_first">home</a></li>
+
+                </ul>
+
+            </div> <!-- END #main_menu -->
+
+        </div> <!-- END .container -->
+
+    </div> <!-- END #header -->
+
+    <div id="main_content">
+
+        <div id="contact_area">
+
+            <div class="container">
+
+                <h2>¡BIENVENIDO!</h2>
+
+                <div id="contact_info">
+
+                    <div id="contact_info_right">
+
+                        <form id="contact_form" role="form">
+                            <fieldset>
+                                <ol>
+                                    <li>
+                                        <!-- END #contact_info_left -->
+                                        <label style= "font-size: large;" for="usuario">Usuario:</label><input type="text" size="60" maxlength=""
+                                            id="usuario" />
+                                    </li>
+                                    <li>
+                                        <!-- END #contact_info_left -->
+                                        <label style= "font-size: large;" for="pass">Contraseña:</label><input type="password" size="60"
+                                            maxlength="" id="pass" />
+                                    </li>
+                                    <li>
+                                        </br>
+                                        <button type="button" class="btn btn-primary" onclick="iniciar()">Iniciar Sesión</button>
+                                        <a href="registro.html" class="btn btn-success">Registrarse</a>
+                                        <a href="recuperar-contraseña.html" class="btn ">¿Olvidaste tu contraseña?</a>
+
+                                    </li>
+
+                                </ol>
+
+                            </fieldset>
+                        </form>
+
+                    </div> <!-- END #contact_info_left -->
+
+                    <div id="contact_info_right">
+
+                        <div id="location_map">
+
+                            <h3>¡GRACIAS POR VISITARNOS!</h3>
+                            
+
+                            <img src="images/more.png" height="230" />
+
+                        </div> <!-- END #location_map -->
+
+                    </div> <!-- END #contact_info_right -->
+
+                </div> <!-- END #contact_info -->
+
+            </div> <!-- END .container -->
+
+        </div> <!-- END #contact_area -->
+
+    </div> <!-- END #main_content -->
+
+    <div id="footer">
+        <img src="https://data2.origin.com/asset/content/dam/originx/web/app/games/need-for-speed/need-for-speed-heat/deluxe-upgrade/NFSHDU_ORIGIN_GDP_BG_4800x1200_en_WW.jpg/ad14b431-0970-4dac-a724-dc525ef36941/original.jpg" height="325" width="1550" />
+    </div>
+    <div id="footer">
+    </br>
+</br>
+        <h5>VIDEOJUEGOS EN LA TIENDA</h5>
+        
+        <div class="container">
+
+            <div id="bloque">
+
+
+            </div>
+        
+    
+        </div>
+
+    </div> <!-- END #footer -->
+
+    <!-- CÓDIGO PARA LOGIN -->
+    <script>
+
+        function iniciar(){
+
+            var usuario = document.getElementById("usuario").value 
+            var pass = document.getElementById("pass").value
+            
+            fetch('https://backend-proyecto2-ipc1.herokuapp.com/login', {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "usuario": usuario,
+                    "password": pass             
+                })
+            })
+            .then(res => res.json())
+            .catch(err => {
+                console.log(err)
+                window.alert("Error")
+            })
+            .then(response => {
+                if(response.estado == 1){
+                    sessionStorage.setItem('id',response['id'])
+                    sessionStorage.setItem('usuario',response['usuario'])
+                    sessionStorage.setItem('tipo',response['tipo'])
+
+                    if(response.tipo == "administrador"){
+                        window.location.href = "catalogo.html";
+                    }
+                    else if (response.tipo == "cliente"){
+                        window.location.href = "catalogo-cliente.html";
+                    }
+                    
+                }
+                else{
+                    window.alert("La contraseña que introduciste es incorrecta")
+                }
+            })
+        }
+
+        function cargarInfo() {
+
+                fetch('https://backend-proyecto2-ipc1.herokuapp.com/mostrar-juegos', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(res => res.json())
+                    .catch(err => {
+                        console.log(err)
+                        alert('Ocurrió un Error')
+                    })
+                    .then(response => {
+                        var videojuegos = response;
+                        var lista_juegos = document.querySelector('#bloque')
+
+                        videojuegos.forEach(juego => {
+
+                            lista_juegos.innerHTML += `
+
+                            <a href="videojuego-publico.html?id=${juego['id']}"><div id="contact_info_left">
+
+                            <div id="location_map1">
+
+                            <h3>${juego['nombre']}</h3>
+                             <img src=${juego['foto']}
+                                 height="210" />
+                            </br>
+                            </br>
+                            <h3>Q.${juego['precio']}</h3> 
+
+
+                             <div>
+            
+   
+                            </div> <!-- END #location_map -->
+
+                            </div>
+
+
+
+                            </div> <!-- END #contact_info_right -->
+           
+        
+                             `
+                        });
+                    })
+
+            }
+
+        </script>
+    
+    
+    </body>
+    
+    </html>

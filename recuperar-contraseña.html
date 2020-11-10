@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> -->
+
+    <title>¿Olvidaste tu contraseña? | More Games Store</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/reset2.css" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/main2.css" />
+
+</head>
+
+<body>
+
+    <div id="header">
+
+        <div class="container">
+
+            <h1>MORE GAMES STORE</h1>
+
+            <div id="main_menu">
+
+                <ul>
+                    <li class="first_list"><a href="login.html" class="main_menu_first">home</a></li>
+
+                </ul>
+
+            </div> <!-- END #main_menu -->
+
+        </div> <!-- END .container -->
+
+    </div> <!-- END #header -->
+
+    <div id="main_content">
+
+        <div id="contact_area">
+
+            <div class="container">
+
+                <h6>RECUPERAR CONTRASEÑA</h6>
+
+                <div id="contact_info">
+
+                    <div id="contact_info_left">
+
+                        <form action="loginf" id="contact_form">
+                            <fieldset>
+                                <ol>
+                                    <li>
+                                        <!-- END #contact_info_left -->
+                                        <label style= "font-size: large;" for="dato">Usuario:</label><input type="text" size="50" maxlength=""
+                                            id="dato" />
+                                    </li>
+                                  
+                                    <li>
+                                        </br>
+                                        <button type="button" class="btn btn-primary" onclick="recuperacion()">Recuperar Contraseña</button> 
+                                        
+
+                                    </li>
+
+                                </ol>
+
+                            </fieldset>
+                        </form>
+
+                    </div> <!-- END #contact_info_left -->
+
+
+                </div> <!-- END #contact_info -->
+
+            </div> <!-- END .container -->
+
+        </div> <!-- END #contact_area -->
+
+    </div> <!-- END #main_content -->
+
+    <!-- CÓDIGO PARA RECUPERAR CONTRASEÑA -->
+    <script>
+
+        function recuperacion(){
+
+            var usuario = document.getElementById("dato").value
+
+            fetch('https://backend-proyecto2-ipc1.herokuapp.com/recuperacion-pass', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "usuario": usuario
+                })   
+            })
+            .then(res => res.json())
+            .catch(err => {
+                console.log(err)
+                window.alert("Error")
+            })
+            .then(response => {
+                if(response.estado == 1){
+                    window.alert("Su contraseña es: " + response.pass)
+                }
+                else{
+                    window.alert("Usuario no encontrado")
+
+                }
+            })
+        }
+
+
+    </script>
+
+</body>
+
+</html>

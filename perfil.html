@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Perfil | More Games Store</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/reset.css" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/main2.css" />
+
+</head>
+
+<body onload="cargarInfo()">
+
+    <div id="header">
+
+        <div class="container">
+
+            <h1>Perfil</h1>
+            <div id="main_menu">
+
+                <ul>
+                    <li class="first_list"><a href="login.html" class="main_menu_first"
+                        sessionStorage.clear()>Cerrar Sesión</a></li>
+                </ul>
+
+            </div> <!-- END #main_menu -->
+
+        </div> <!-- END .container -->
+
+    </div> <!-- END #header -->
+
+    <div id="main_content">
+
+        <div id="portfolio_area">
+
+            <div class="container">
+
+                <div id="portfolio_menu">
+
+                    <ul>
+                        <li><a href="catalogo.html">Catálogo de Videojuegos</a></li>
+                        <li><a href="biblioteca.html">Mi Biblioteca</a></li>
+                        <li><a href="perfil.html">Perfil</a></li>
+                        <li><a href="carga-masiva.html">Carga Masiva</a></li>
+                        <li><a href="crud-videojuegos.html">CRUD de Videojuegos</a></li>
+                        <li><a href="reportes.html">Generar Reportes</a></li>
+                        <li><a href="crear-usuario.html">Crear Usuario</a></li>
+                    </ul>
+
+                </div> <!-- END #portfolio_menu -->
+
+            </div> <!-- END .container -->
+
+        </div> <!-- END #portfolio_area -->
+
+    </div> <!-- END #main_content -->
+
+    
+    <div id="main_content">
+
+            <div class="container">
+
+                <center>
+
+                    <h3>INFORMACIÓN SOBRE TI</h3>
+
+                </center>
+               
+            </br>
+            </br>
+
+                <div>
+                    <table class="styled-table" style="text-align: center; margin: auto;">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Usuario</th>
+                            </tr>
+                        </thead>
+                        <tbody id="infoUsuario">
+                            
+            
+                        </tbody>
+                    </table>
+                </div>
+
+                    <div id="contact_info_left">
+
+                        <h3>MODIFICAR INFORMACIÓN</h3>
+                    </br>
+                    </br>
+
+                        <form id="contact_form" role="form">
+                            <fieldset>
+                                <ol>
+                                    <li>
+                                        <!-- END #contact_info_left -->
+                                        <label style= "font-size: large;" for="nombre">Nombre:</label><input type="text" size="60" maxlength=""
+                                            id="nombre" />
+                                    </li>
+                                    <li>
+                                        <!-- END #contact_info_left -->
+                                        <label style= "font-size: large;" for="apellido">Apellido:</label><input type="text" size="60"
+                                            maxlength="" id="apellido" />
+                                    </li>
+                                    <li>
+                                        <!-- END #contact_info_left -->
+                                        <label style= "font-size: large;" for="usuario">Usuario:</label><input type="text" size="60"
+                                            maxlength="" id="usuario" />
+                                    </li>
+                                    <li>
+                                        <!-- END #contact_info_left -->
+                                        <label style= "font-size: large;" for="pass">Contraseña:</label><input type="password" size="60"
+                                            maxlength="" id="pass" />
+                                    </li>
+                                    <li>
+                                        <!-- END #contact_info_left -->
+                                        <label style= "font-size: large;" for="conf_pass">Confirmar Contraseña:</label><input type="password" size="60"
+                                            maxlength="" id="conf_pass" />
+                                    </li>
+                                    <li>
+                                        </br>
+                                        </br>
+                                        <button type="button" class="btn btn-primary" onclick="modificar()">Modificar Información</button>
+
+                                    </li>
+
+                                </ol>
+
+                            </fieldset>
+                        </form>
+
+                    </div> <!-- END #contact_info_left -->
+
+
+            </div> <!-- END .container -->
+
+
+    </div> <!-- END #main_content -->
+
+    <script>
+
+        var usuarioG = sessionStorage.getItem('usuario');
+        var idG = sessionStorage.getItem('id');
+
+        function cargarInfo() {
+
+            fetch('https://backend-proyecto2-ipc1.herokuapp.com/info-perfil', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                    "usuario_id": idG
+            })
+        })
+        .then(res => res.json())
+        .catch(err => {
+            console.log(err)
+            window.alert("Error")
+        })
+        .then(response => {
+            console.log(response)
+            var info = response['data'];
+            var tabla = document.querySelector('#infoUsuario')
+
+            tabla.innerHTML = `
+            <tr>
+                <td>${info['nombre']}</td>
+                <td>${info['apellido']}</td>
+                <td>${info['usuario']}</td>
+            </tr>`
+            
+            document.getElementById("nombre").value = info['nombre']
+            document.getElementById("apellido").value = info['apellido']
+            document.getElementById("usuario").value = info['usuario']
+            document.getElementById("pass").value = info['pass']
+            document.getElementById("conf_pass").value = info['pass']
+                
+        })
+
+    }
+
+    function modificar(){
+
+        var nombre = document.getElementById("nombre").value
+        var apellido = document.getElementById("apellido").value 
+        var usuario = document.getElementById("usuario").value
+        var pass = document.getElementById("pass").value 
+        var conf_pass = document.getElementById("conf_pass").value
+
+        fetch('https://backend-proyecto2-ipc1.herokuapp.com/modificar-perfil', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "id": idG,
+                    "nombre": nombre,
+                    "apellido": apellido,
+                    "usuario": usuario,
+                    "password": pass,
+                    "conf_password": conf_pass
+                })
+            })
+            .then(res => res.json())
+            .catch(err => {
+                console.log(err)
+                window.alert("Error")
+            })
+            .then(response => {
+                console.log(response)
+                var info = response['data']
+
+                if(response.estado == 1){
+
+                    window.alert(info['nombre'] + " " + info['apellido'] +
+                    " se modificó tu información")
+
+                }
+                else if(response.estado == 2){
+
+                    window.alert("Ocurrió un error al modificar tu información")
+                }
+                else{
+                    window.alert("La contraseña de verificación no coincide")
+                }
+
+            
+                
+
+            })
+
+    }
+
+
+
+
+    </script>
+
+
+</body>
+
+</html>

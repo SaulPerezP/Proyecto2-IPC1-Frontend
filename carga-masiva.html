@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Carga Masiva | Usac Game Store</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/reset.css" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/main2.css" />
+    
+
+</head>
+
+<body>
+
+    <div id="header">
+
+        <div class="container">
+
+            <h1>Carga Masiva</h1>
+            <div id="main_menu">
+
+                <ul>
+                    <li class="first_list"><a href="login.html" class="main_menu_first"
+                        sessionStorage.clear()>Cerrar Sesión</a></li>
+                </ul>
+
+            </div> <!-- END #main_menu -->
+
+        </div> <!-- END .container -->
+
+    </div> <!-- END #header -->
+
+    <div id="main_content">
+
+        <div id="portfolio_area">
+
+            <div class="container">
+
+                <div id="portfolio_menu">
+
+                    <ul>
+                        <li><a href="catalogo.html">Catálogo de Videojuegos</a></li>
+                        <li><a href="biblioteca.html">Mi Biblioteca</a></li>
+                        <li><a href="perfil.html">Perfil</a></li>
+                        <li><a href="carga-masiva.html">Carga Masiva</a></li>
+                        <li><a href="crud-videojuegos.html">CRUD de Videojuegos</a></li>
+                        <li><a href="reportes.html">Generar Reportes</a></li>
+                        <li><a href="crear-usuario.html">Crear Usuario</a></li>
+                    </ul>
+
+                </div> <!-- END #portfolio_menu -->
+
+              
+            </div> <!-- END .container -->
+
+        </div> <!-- END #footer -->
+        <div  class="container3">
+        </br>
+        </br>
+
+            <h3>SELECCIONA UN ARCHIVO:</h3>
+
+            <div id="footer2">
+                <div class="container">
+
+                    <div id="main_menu2">
+
+                        <input type="file" id="file"  class="btn btn-success"/>
+                        <button type="button" class="btn btn-primary" onclick="cargarArchivo()">Cargar Videojuegos del archivo</button>
+
+                    </div> <!-- END #main_menu -->
+
+                </div>
+
+            </div>
+
+        </div> 
+
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+<script>
+
+    var usuarioG = sessionStorage.getItem('usuario');
+    var idG = sessionStorage.getItem('id');
+
+    function cargarArchivo(){
+
+        $('#file').parse({
+            config: {
+                delimiter: ",",
+                complete: guardarJuegos,
+            },
+
+            before: function(file,inputElem)
+            {
+                console.log("Parsing file...",file);
+
+            },
+            error: function(err,file)
+            {
+                console.log("ERROR:", err, file);
+            },
+
+            complete: function()
+            {
+                console.log("Done with all files")
+            }
+        })
+    }
+
+    function guardarJuegos(results){
+
+        console.log(results.data)
+        var data = results.data;
+        var val = true
+
+        for (i=1; i<data.length - 1;i++){
+
+            var nombre = data[i][0]
+            var anio = data[i][1]
+            var precio = data[i][2]
+            var cat1 = data[i][3]
+            var cat2 = data[i][4]
+            var cat3 = data[i][5]
+            var foto = data[i][6]
+            var banner = data[i][7]
+            var desc = data[i][8]
+            var objeto = {
+                'nombre': nombre,
+                'anio': anio,
+                'precio': precio,
+                'cat1': cat1,
+                'cat2': cat2,
+                'cat3': cat3,
+                'foto': foto,
+                'banner': banner,
+                'descripcion': desc
+            }
+            
+            console.log(objeto)
+
+            fetch('https://backend-proyecto2-ipc1.herokuapp.com/creacion-juego',{
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(objeto),
+            })
+            .then(res => res.json())
+            .catch(err => {
+                console.log(err)
+                window.alert("Error")
+                val = false
+            })
+            .then(response =>{
+                console.log(response);
+            }) 
+        }
+
+        if (val = true){
+
+            window.alert("Se agregaron los Videojuegos exitosamente")
+
+        }
+
+
+    }
+
+</script>
+
+</html>

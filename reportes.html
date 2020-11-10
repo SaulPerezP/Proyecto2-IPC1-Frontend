@@ -1,0 +1,460 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Reportes | More Games Store</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/reset.css" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/reportes.css" />
+
+</head>
+
+<body >
+
+    <div id="header">
+
+        <div class="container">
+
+            <h1>Reportes</h1>
+            <div id="main_menu">
+
+                <ul>
+                    <li class="first_list"><a href="login.html" class="main_menu_first"
+                        sessionStorage.clear()>Cerrar Sesión</a></li>
+                </ul>
+
+            </div> <!-- END #main_menu -->
+
+        </div> <!-- END .container -->
+
+    </div> <!-- END #header -->
+
+    <div id="main_content">
+
+        <div id="portfolio_area">
+
+            <div class="container">
+
+                <div id="portfolio_menu">
+
+                    <ul>
+                        <li><a href="catalogo.html">Catálogo de Videojuegos</a></li>
+                        <li><a href="biblioteca.html">Mi Biblioteca</a></li>
+                        <li><a href="perfil.html">Perfil</a></li>
+                        <li><a href="carga-masiva.html">Carga Masiva</a></li>
+                        <li><a href="crud-videojuegos.html">CRUD de Videojuegos</a></li>
+                        <li><a href="reportes.html">Generar Reportes</a></li>
+                        <li><a href="crear-usuario.html">Crear Usuario</a></li>
+                    </ul>
+
+                </div> <!-- END #portfolio_menu -->
+
+            </div> <!-- END .container -->
+
+        </div> <!-- END #portfolio_area -->
+
+    </div> <!-- END #main_content -->
+
+    
+    <div id="main_content">
+
+            <div class="container3">
+
+                    <center>
+
+                        <h3>SELECCIONA UNA OPCIÓN:</h3>
+                    </br>
+                    </br>       
+                        <button type="button" class="btn btn-primary" onclick="reporteVideojuegos()">Reporte de Videojuegos en el Sistema</button>
+                        <button type="button" class="btn btn-primary" onclick="reporteUsuarios()">Reporte de Usuarios en el Sistema</button>
+                        <button type="button" class="btn btn-primary" onclick="comentarios()">Comentarios Generales</button>
+                        
+                    </center>
+
+
+            </div> <!-- END .container -->
+
+
+    </div> <!-- END #main_content -->
+
+    <div id="HTMLtoPDF">
+
+        <div id="main_content2">
+
+        </div>
+        
+    </div>
+
+   
+    </div> <!-- END #main_content -->
+
+    <script src="js/jspdf.js"></script>
+    <script src="js/jquery-2.1.3.js"></script>
+    <script src="js/pdfFromHTML.js"></script>
+
+    <script>
+
+        var usuarioG = sessionStorage.getItem('usuario');
+        var idG = sessionStorage.getItem('id');
+
+        function reporteVideojuegos(){
+
+            var titulo = document.querySelector('#main_content2')
+            var lista_juegos = document.querySelector('#main_content2')
+           
+            titulo.innerHTML = `
+
+            <div class="container3">
+            </br>
+            </br> 
+                <h3>REPORTE DE VIDEOJUEGOS:</h3>
+                <center>
+                    <button type="button" class="btn btn-success" onclick="HTMLtoPDF()">Generar PDF</button>
+                    </center>
+
+            </div>
+            `
+
+            fetch('https://backend-proyecto2-ipc1.herokuapp.com/mostrar-juegos', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(res => res.json())
+                .catch(err => {
+                    console.log(err)
+                    alert('Ocurrió un Error')
+                })
+                .then(response => {
+                    var videojuegos = response;
+
+                    videojuegos.forEach(juego => {
+
+                        lista_juegos.innerHTML += ` 
+                                    <div>
+                                        <table class="styled-table" style="text-align: left; margin: auto;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Id</th>
+                                                    <th>Nombre</th>
+                                                    <th>Año</th>
+                                                    <th>Precio</th>
+                                                    <th>Categoría 1</th>
+                                                    <th>Categoría 2</th>
+                                                    <th>Categoría 3</th>      
+                                                </tr>
+                                            </thead>
+                                            <tbody id="bloque1">
+                                                <tr>
+                                                    <td>${juego['id']}</td>
+                                                    <td>${juego['nombre']}</td>
+                                                    <td>${juego['anio']}</td>
+                                                    <td>${juego['precio']}</td>
+                                                    <td>${juego['categoria1']}</td>
+                                                    <td>${juego['categoria2']}</td>
+                                                    <td>${juego['categoria3']}</td>
+
+                                                </tr>
+                                                
+                                            </tbody>
+                                        </table>
+                                        <table class="styled-table" style="text-align: left; margin: auto;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Foto</th>
+                                                
+                                                </tr>
+                                            </thead>
+                                            <tbody id="bloque2">
+                                                        <tr>
+                                                            <td>${juego['foto']}</td>
+                                                        
+
+                                                </tr>
+                                                
+                                            </tbody>
+                                        </table>
+                                        <table class="styled-table" style="text-align: left; margin: auto;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Banner</th>  
+                                                </tr>
+                                            </thead>
+                                            <tbody id="bloque3">
+                                                <tr>
+                                                            <td>${juego['banner']}</td>
+                                                        
+
+                                                </tr> 
+                                            </tbody>
+                                        </table>
+                                        <table class="styled-table" style="text-align: left; margin: auto;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Descripción</th>  
+                                                </tr>
+                                            </thead>
+                                            <tbody id="bloque3">
+                                                <tr>
+                                                            <td>${juego['descripcion']}</td>
+                                                        
+
+                                                </tr> 
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    </div>
+                                    </br>
+                                    </br>
+                                                
+                                    `
+                        });
+                    })
+
+        }
+
+        function reporteUsuarios(){
+
+            var titulo = document.querySelector('#main_content2')
+            var lista_usuarios = document.querySelector('#info_usuarios')
+            
+            titulo.innerHTML = `
+
+            <div class="container3">
+            </br>
+            </br> 
+                <h3>REPORTE DE USUARIOS:</h3>
+                <center>
+                    <button type="button" class="btn btn-success" onclick="HTMLtoPDF()">Generar PDF</button>
+                </center>
+            </div>
+            <div class="container3">
+                <div id="main_menu2">
+                
+
+                <select class="second_list second_list_border" id="categoriasU">
+                    <option value="0">Todos los Usuarios</option>
+                    <option value="1">Administradores</option>
+                    <option value="2">Clientes</option>
+        
+                </select>
+     
+    
+                </div> <!-- END #main_menu -->  
+                <div >
+
+                    <button type="button" class="btn2 btn-categoria" onclick="verUsuarios()">Mostrar Usuarios</button>
+
+                </div> 
+            
+            </div>
+
+            
+            <div class="container3">
+                <table class="styled-table" style="text-align: center; margin: auto;">
+                    <thead>
+                         <tr>
+                            <th>id</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Usuario</th>
+                            <th>Rol</th>
+                        </tr>
+                    </thead>
+                    <tbody id="info_usuarios">
+                        
+                    </tbody>
+                </table>
+            </div>
+            
+            `
+        }
+
+        function verUsuarios(){
+
+            var seleccion = document.getElementById("categoriasU").options.selectedIndex
+            var lista_usuarios = document.querySelector('#info_usuarios')
+            lista_usuarios.innerHTML = ""
+
+            fetch('https://backend-proyecto2-ipc1.herokuapp.com/mostrar-usuarios', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(res => res.json())
+                .catch(err => {
+                    console.log(err)
+                    alert('Ocurrió un Error')
+                })
+                .then(response => {
+                    var usuarios = response;
+    
+                    usuarios.forEach(user => {
+
+                        if(seleccion == 0){
+
+                            lista_usuarios.innerHTML += ` 
+                            <tr>
+                                <td>${user['id']}</td>
+                                <td>${user['nombre']}</td>
+                                <td>${user['apellido']}</td>
+                                <td>${user['usuario']}</td>
+                                <td>${user['tipo']}</td>
+                            </tr>
+                            `
+                        }
+                        else if(seleccion == 1){
+
+                            if(user['tipo'] == "administrador"){
+                                lista_usuarios.innerHTML += ` 
+                                <tr>
+                                    <td>${user['id']}</td>
+                                    <td>${user['nombre']}</td>
+                                    <td>${user['apellido']}</td>
+                                    <td>${user['usuario']}</td>
+                                    <td>${user['tipo']}</td>
+                                </tr>
+                                `
+                            }
+                        }    
+                        else if(seleccion == 2){
+                            if(user['tipo'] == "cliente"){
+                                    lista_usuarios.innerHTML += ` 
+                                    <tr>
+                                        <td>${user['id']}</td>
+                                        <td>${user['nombre']}</td>
+                                        <td>${user['apellido']}</td>
+                                        <td>${user['usuario']}</td>
+                                        <td>${user['tipo']}</td>
+                                    </tr>
+                                    `
+                            }    
+                            
+                        }
+    
+                    });
+                })
+
+        }
+
+        function comentarios(){
+
+            var titulo = document.querySelector('#main_content2')
+            var lista_comentarios = document.querySelector('#main_content2')
+            
+            titulo.innerHTML = `
+
+            <div class="container3">
+            </br>
+            </br> 
+                <h3>COMENTARIOS:</h3>
+
+                <div class="container4">
+                </br>
+            </br>
+            <div id="main_menu2">
+                
+
+            <select class="second_list second_list_border" id="categorias">
+    
+    
+            </select>
+ 
+
+            </div> <!-- END #main_menu -->  
+            <div >
+
+                <button type="button" class="btn2 btn-categoria" onclick="verComentarios()">Mostrar Juego</button>
+ 
+            </div> 
+            </div>
+            <div class="container3">
+                <table class="styled-table" style="text-align: center; margin: auto;">
+                    <thead>
+                         <tr>
+                            <th>Usuario</th>
+                            <th>Comentario de los Usuarios</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody id="info_comentarios">
+                        
+                    </tbody>
+                </table>
+            </div>
+            
+            `
+            fetch('https://backend-proyecto2-ipc1.herokuapp.com/mostrar-juegos', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+                .catch(err => {
+                    console.log(err)
+                    alert('Ocurrió un Error')
+            })
+            .then(response => {
+                    var videojuegos = response;
+                    var lista_juegos = document.querySelector('#categorias')
+
+                    videojuegos.forEach(juego => {
+
+                        lista_juegos.innerHTML +=`
+                        <option value="${juego['id']}">${juego['nombre']}</option>
+                        `
+                    });   
+
+            }) 
+     
+        }
+
+        function verComentarios(){
+
+            var seleccion = document.getElementById("categorias");
+	        var texto = seleccion.options[seleccion.selectedIndex].text;
+            var lista_comentarios = document.querySelector('#info_comentarios')
+            lista_comentarios.innerHTML = ""
+
+            fetch('https://backend-proyecto2-ipc1.herokuapp.com/mostrar-comentarios', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(res => res.json())
+                .catch(err => {
+                    console.log(err)
+                    alert('Ocurrió un Error')
+                })
+                .then(response => {
+                    var comentarios = response;
+                    
+
+                    comentarios.forEach(comentario => {
+
+                        if(texto == comentario['videojuego']){
+                            lista_comentarios.innerHTML += ` 
+                                    <tr>
+                                        <td>${comentario['usuario']}</td>
+                                        <td>${comentario['comentario']}</td>                        
+                                    </tr>            
+                            `
+                        }
+ 
+                    });
+                })
+
+
+        }
+
+    
+    </script>    
+
+</body>
+
+</html>
